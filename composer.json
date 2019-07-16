@@ -1,6 +1,11 @@
 {
     "name": "dubicars/omnipay-checkout.com",
     "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Omnipay\\CheckoutCom\\" : "src/"
+        }
+    },
     "authors": [
         {
             "name": "Naren",
