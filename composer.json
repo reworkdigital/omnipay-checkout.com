@@ -1,0 +1,14 @@
+{
+    "name": "dubicars/omnipay-checkoutt.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Naren",
+            "email": "developer.naren@gmail.com"
+        }
+    ],
+    "require": {
+        "league/omnipay": "^3"
+    },
+    "minimum-stability": "stable"
+}
