@@ -23,7 +23,6 @@ class CheckoutComAuthorizeRequest implements MessageInterface
 
 	public function initialize($parameters = [])
 	{
-
 		$params = [
 			'source' => [
 				'type' => 'token',
@@ -31,6 +30,9 @@ class CheckoutComAuthorizeRequest implements MessageInterface
 			],
 			'amount' => $parameters['amount'] * 100,
 			'currency' => $parameters['currency'],
+			'success_url' => $parameters['returnUrl'],
+			'failure_url' => $parameters['failureUrl'],
+			'description' => $parameters['description']
 		];
 
 		if(isset($parameters["3ds"]) && $parameters["3ds"]){
@@ -38,7 +40,7 @@ class CheckoutComAuthorizeRequest implements MessageInterface
 		}
 
 		$response = json_decode($this->client->request('POST', 'https://api.sandbox.checkout.com/payments', [
-			'Authorization' => config('payment.checkout.secret_key'),
+			'Authorization' => $parameters['secretKey'],
 			'Content-Type' => 'application/json'
 		], json_encode($params))->getBody()->getContents(), 1);
 

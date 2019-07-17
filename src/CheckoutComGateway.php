@@ -9,6 +9,9 @@ use Omnipay\Common\GatewayInterface;
 
 class CheckoutComGateway extends AbstractGateway implements GatewayInterface
 {
+
+	private $secretKey;
+
 	public function getName()
 	{
 		return 'Checkout Com';
@@ -21,17 +24,14 @@ class CheckoutComGateway extends AbstractGateway implements GatewayInterface
 
 	public function getDefaultParameters()
 	{
-		return [];
+		return [
+			'testMode' => true
+		];
 	}
 
 	public function initialize(array $parameters = array())
 	{
-		// TODO: Implement initialize() method.
-	}
-
-	public function getParameters()
-	{
-		return [];
+		return parent::initialize($parameters);
 	}
 
 	public function authorize(array $options = array())
@@ -41,7 +41,18 @@ class CheckoutComGateway extends AbstractGateway implements GatewayInterface
 
 	public function capture(array $options = array())
 	{
+		$options = array_merge($this->getParameters(), $options);
 		return $this->createRequest(CheckoutComCaptureRequest::class, $options);
+	}
+
+	public function setSecretKey($secretKey)
+	{
+		$this->parameters->set('secretKey',$secretKey);
+	}
+
+	public function getSecretKey()
+	{
+		$this->parameters->get('secretKey');
 	}
 
 }
