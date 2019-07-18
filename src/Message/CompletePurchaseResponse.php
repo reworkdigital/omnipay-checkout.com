@@ -8,13 +8,13 @@ use Omnipay\Common\Message\RequestInterface;
 use Omnipay\Common\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-class CheckoutComCompletePurchaseResponse implements ResponseInterface
+class CompletePurchaseResponse implements ResponseInterface
 {
 	private $request;
 	private $data;
 	private $parameters;
 
-	public function __construct(CheckoutComCompletePurchaseRequest $request, array $data)
+	public function __construct(CompletePurchaseRequest $request, array $data)
 	{
 		$this->request = $request;
 		$this->response = new ParameterBag($data);

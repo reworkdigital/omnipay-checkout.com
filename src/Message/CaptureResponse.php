@@ -4,13 +4,13 @@ namespace Omnipay\CheckoutCom\Message;
 
 use Omnipay\Common\Message\ResponseInterface;
 
-class CheckoutComCaptureResponse implements ResponseInterface
+class CaptureResponse implements ResponseInterface
 {
 
 	private $data;
 	private $request;
 
-	public function __construct(CheckoutComCaptureRequest $request, array $data)
+	public function __construct(CaptureRequest $request, array $data)
 	{
 		$this->data = $data;
 		$this->request = $request;

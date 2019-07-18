@@ -9,7 +9,7 @@ use Omnipay\Common\Message\MessageInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 
-class CheckoutComAuthorizeRequest implements MessageInterface
+class AuthorizeRequest implements MessageInterface
 {
 	private $client;
 	private $request;
@@ -66,6 +66,6 @@ class CheckoutComAuthorizeRequest implements MessageInterface
 			'Content-Type' => 'application/json'
 		], json_encode($this->requestParams->all()))->getBody()->getContents(), 1);
 
-		return $this->response = new CheckoutComAuthorizeResponse($this, $response);
+		return $this->response = new AuthorizeResponse($this, $response);
 	}
 }

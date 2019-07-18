@@ -4,13 +4,13 @@ namespace Omnipay\CheckoutCom\Message;
 
 use Omnipay\Common\Message\ResponseInterface;
 
-class CheckoutComAuthorizeResponse implements ResponseInterface
+class AuthorizeResponse implements ResponseInterface
 {
 
 	private $request;
 	private $data;
 
-	public function __construct(CheckoutComAuthorizeRequest $request, array $data)
+	public function __construct(AuthorizeRequest $request, array $data)
 	{
 		$this->data = $data;
 		$this->request = $request;

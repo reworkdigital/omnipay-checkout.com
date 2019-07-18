@@ -6,7 +6,7 @@ use Omnipay\Common\Http\Client;
 use Omnipay\Common\Message\RequestInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-class CheckoutComCaptureRequest implements RequestInterface
+class CaptureRequest implements RequestInterface
 {
 
 	private $client;
@@ -38,7 +38,7 @@ class CheckoutComCaptureRequest implements RequestInterface
 			->getBody()
 			->getContents();
 
-		return $this->response = new CheckoutComCaptureResponse($this, json_decode($response));
+		return $this->response = new CaptureResponse($this, json_decode($response));
 	}
 
 	public function getParameters()

@@ -10,7 +10,7 @@ use Omnipay\Common\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 
-class CheckoutComCompletePurchaseRequest implements RequestInterface
+class CompletePurchaseRequest implements RequestInterface
 {
 
 	private $response;
@@ -53,7 +53,7 @@ class CheckoutComCompletePurchaseRequest implements RequestInterface
 		])->getBody()->getContents(), 1);
 
 
-		return $this->response = new CheckoutComCompletePurchaseResponse($this, $response);
+		return $this->response = new CompletePurchaseResponse($this, $response);
 	}
 
 	public function sendData($data)
