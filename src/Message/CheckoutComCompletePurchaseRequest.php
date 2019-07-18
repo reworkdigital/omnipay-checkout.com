@@ -4,38 +4,60 @@
 namespace Omnipay\CheckoutCom\Message;
 
 
+use Omnipay\Common\Http\Client;
 use Omnipay\Common\Message\RequestInterface;
 use Omnipay\Common\Message\ResponseInterface;
+use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpFoundation\Request;
 
 class CheckoutComCompletePurchaseRequest implements RequestInterface
 {
+
+	private $response;
+
+	public function __construct(Client $client, Request $request)
+	{
+		$this->client = $client;
+		$this->request = $request;
+		$this->parameters = new ParameterBag();
+		$this->requestParams = new ParameterBag();
+	}
+
 	public function getData()
 	{
-		// TODO: Implement getData() method.
+		return array_merge($this->parameters->all(), $this->requestParams->all());
 	}
 
 	public function initialize(array $parameters = array())
 	{
-		// TODO: Implement initialize() method.
+		$this->requestParams->add(['id' => $parameters['id']]);
+		$this->parameters->add($parameters);
+		return $this;
 	}
 
 	public function getParameters()
 	{
-		// TODO: Implement getParameters() method.
+		return $this->parameters->all();
 	}
 
 	public function getResponse()
 	{
-		// TODO: Implement getResponse() method.
+		return $this->response;
 	}
 
 	public function send()
 	{
-		// TODO: Implement send() method.
+		$response = json_decode($this->client->request('GET', 'https://api.sandbox.checkout.com/payments/' . $this->requestParams->get('id'), [
+			'Authorization' => $this->parameters->get('secretKey'),
+			'Content-Type' => 'application/json'
+		])->getBody()->getContents(), 1);
+
+
+		return $this->response = new CheckoutComCompletePurchaseResponse($this, $response);
 	}
 
 	public function sendData($data)
 	{
-		// TODO: Implement sendData() method.
+
 	}
 }

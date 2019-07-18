@@ -28,7 +28,6 @@ class CheckoutComCaptureRequest implements RequestInterface
 	public function initialize(array $parameters = array())
 	{
 		$url = 'https://api.sandbox.checkout.com/payments/'. $parameters['payment_id'] .'/captures';
-		dump($url);
 		$response = $this->client
 			->request('POST',$url, [
 				'Authorization' => config('payment.checkout.secret_key'),
@@ -38,8 +37,6 @@ class CheckoutComCaptureRequest implements RequestInterface
 			]))
 			->getBody()
 			->getContents();
-
-		dd($response);
 
 		return $this->response = new CheckoutComCaptureResponse($this, json_decode($response));
 	}

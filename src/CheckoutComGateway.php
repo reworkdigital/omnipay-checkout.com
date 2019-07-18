@@ -4,6 +4,7 @@ namespace Omnipay\CheckoutCom;
 
 use Omnipay\CheckoutCom\Message\CheckoutComAuthorizeRequest;
 use Omnipay\CheckoutCom\Message\CheckoutComCaptureRequest;
+use Omnipay\CheckoutCom\Message\CheckoutComCompletePurchaseRequest;
 use Omnipay\Common\AbstractGateway;
 use Omnipay\Common\GatewayInterface;
 
@@ -36,6 +37,7 @@ class CheckoutComGateway extends AbstractGateway implements GatewayInterface
 
 	public function authorize(array $options = array())
 	{
+		$options = array_merge($this->getParameters(), $options);
 		return $this->createRequest(CheckoutComAuthorizeRequest::class, $options);
 	}
 
@@ -43,6 +45,12 @@ class CheckoutComGateway extends AbstractGateway implements GatewayInterface
 	{
 		$options = array_merge($this->getParameters(), $options);
 		return $this->createRequest(CheckoutComCaptureRequest::class, $options);
+	}
+
+	public function completePurchase(array $options = array())
+	{
+		$options = array_merge($this->getParameters(), $options);
+		return $this->createRequest(CheckoutComCompletePurchaseRequest::class, $options);
 	}
 
 	public function setSecretKey($secretKey)

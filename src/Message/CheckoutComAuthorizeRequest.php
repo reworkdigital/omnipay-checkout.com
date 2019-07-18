@@ -6,6 +6,7 @@ namespace Omnipay\CheckoutCom\Message;
 
 use Omnipay\Common\Http\Client;
 use Omnipay\Common\Message\MessageInterface;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 
 class CheckoutComAuthorizeRequest implements MessageInterface
@@ -13,16 +14,22 @@ class CheckoutComAuthorizeRequest implements MessageInterface
 	private $client;
 	private $request;
 	private $response;
+	private $requestParams;
+	private $headers;
+	private $parameters;
 
 
 	public function __construct(Client $client, Request $request)
 	{
 		$this->client = $client;
 		$this->request = $request;
+		$this->parameters = new ParameterBag();
+		$this->requestParams = new ParameterBag();
 	}
 
 	public function initialize($parameters = [])
 	{
+
 		$params = [
 			'source' => [
 				'type' => 'token',
@@ -39,18 +46,26 @@ class CheckoutComAuthorizeRequest implements MessageInterface
 			$params["3ds"] = ["enabled" => true];
 		}
 
-		$response = json_decode($this->client->request('POST', 'https://api.sandbox.checkout.com/payments', [
-			'Authorization' => $parameters['secretKey'],
-			'Content-Type' => 'application/json'
-		], json_encode($params))->getBody()->getContents(), 1);
+		$this->parameters->add($parameters);
 
+		$this->requestParams->add($params);
 
-		return $this->response = new CheckoutComAuthorizeResponse($this, $response);
+		return $this;
 
 	}
 
 	public function getData()
 	{
 		return $this->response;
+	}
+
+	public function send()
+	{
+		$response = json_decode($this->client->request('POST', 'https://api.sandbox.checkout.com/payments', [
+			'Authorization' => $this->parameters->get('secretKey'),
+			'Content-Type' => 'application/json'
+		], json_encode($this->requestParams->all()))->getBody()->getContents(), 1);
+
+		return $this->response = new CheckoutComAuthorizeResponse($this, $response);
 	}
 }
