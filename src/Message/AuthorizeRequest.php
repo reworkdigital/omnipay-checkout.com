@@ -29,7 +29,6 @@ class AuthorizeRequest implements MessageInterface
 
 	public function initialize($parameters = [])
 	{
-
 		$params = [
 			'source' => [
 				'type' => 'token',
@@ -38,7 +37,7 @@ class AuthorizeRequest implements MessageInterface
 			'amount' => $parameters['amount'] * 100,
 			'currency' => $parameters['currency'],
 			'success_url' => $parameters['returnUrl'],
-			'failure_url' => $parameters['failureUrl'],
+			'failure_url' => $parameters['cancelUrl'],
 			'description' => $parameters['description']
 		];
 
@@ -47,7 +46,6 @@ class AuthorizeRequest implements MessageInterface
 		}
 
 		$this->parameters->add($parameters);
-
 		$this->requestParams->add($params);
 
 		return $this;
