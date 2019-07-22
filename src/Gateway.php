@@ -60,7 +60,7 @@ class Gateway extends AbstractGateway implements GatewayInterface
 
 	public function getSecretKey()
 	{
-		$this->parameters->get('secretKey');
+		return $this->parameters->get('secretKey');
 	}
 
 }

@@ -4,6 +4,7 @@ namespace Omnipay\CheckoutCom\Message;
 
 use Omnipay\Common\Http\Client;
 use Omnipay\Common\Message\RequestInterface;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 
 class CaptureRequest implements RequestInterface
@@ -12,12 +13,16 @@ class CaptureRequest implements RequestInterface
 	private $client;
 	private $request;
 	private $response;
-
+	private $url = 'https://api.sandbox.checkout.com/payments/%s/captures';
+	private $parameters;
+	private $requestParams;
 
 	public function __construct(Client $client, Request $request)
 	{
 		$this->client = $client;
 		$this->request = $request;
+		$this->parameters = new ParameterBag();
+		$this->requestParams = new ParameterBag();
 	}
 
 	public function getData()
@@ -27,18 +32,13 @@ class CaptureRequest implements RequestInterface
 
 	public function initialize(array $parameters = array())
 	{
-		$url = 'https://api.sandbox.checkout.com/payments/'. $parameters['payment_id'] .'/captures';
-		$response = $this->client
-			->request('POST',$url, [
-				'Authorization' => config('payment.checkout.secret_key'),
-				'Content-Type' => 'application/json'
-			],json_encode([
-				'amount' => $parameters['amount'] * 100
-			]))
-			->getBody()
-			->getContents();
+		$this->parameters->set('secretKey', $parameters['secretKey']);
+		$this->requestParams->add([
+			'amount' => $parameters['amount']
+		]);
+		$this->url = sprintf($this->url, $parameters['id']);
 
-		return $this->response = new CaptureResponse($this, json_decode($response));
+		return $this;
 	}
 
 	public function getParameters()
@@ -48,12 +48,22 @@ class CaptureRequest implements RequestInterface
 
 	public function getResponse()
 	{
-		// TODO: Implement getResponse() method.
+		return $this->response;
 	}
 
 	public function send()
 	{
-		// TODO: Implement send() method.
+		$response = $this->client
+			->request('POST', $this->url, [
+				'Authorization' => $this->parameters->get('secretKey'),
+				'Content-Type' => 'application/json'
+			], json_encode([
+				'amount' => $this->requestParams->get('amount') * 100
+			]))
+			->getBody()
+			->getContents();
+
+		return $this->response = new CaptureResponse($this, json_decode($response, 1));
 	}
 
 	public function sendData($data)

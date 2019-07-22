@@ -28,7 +28,7 @@ class AuthorizeResponse implements ResponseInterface
 
 	public function isSuccessful()
 	{
-		return $this->getData()["approved"];
+		return $this->getData()["approved"] && $this->getData()["status"] === "Authorized";
 	}
 
 	public function isRedirect()

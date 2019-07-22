@@ -23,12 +23,12 @@ class CaptureResponse implements ResponseInterface
 
 	public function getRequest()
 	{
-		// TODO: Implement getRequest() method.
+		return $this->request;
 	}
 
 	public function isSuccessful()
 	{
-		// TODO: Implement isSuccessful() method.
+//		return
 	}
 
 	public function isRedirect()

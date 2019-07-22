@@ -27,7 +27,9 @@ class CompletePurchaseResponse implements ResponseInterface
 
 	public function isSuccessful()
 	{
-		return $this->response->has('approved') && $this->response->get('approved')=== true && $this->response->get('status') === "Captured";
+		return $this->response->has('approved')
+			&& $this->response->get('approved')=== true
+			&& ($this->response->get('status') === "Captured" || $this->response->get('status') === "Authorized");
 	}
 
 	public function isRedirect()
