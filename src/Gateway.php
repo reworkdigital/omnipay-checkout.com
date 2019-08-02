@@ -12,6 +12,7 @@ class Gateway extends AbstractGateway implements GatewayInterface
 {
 
 	private $secretKey;
+	protected $testMode;
 
 	public function getName()
 	{
@@ -62,5 +63,4 @@ class Gateway extends AbstractGateway implements GatewayInterface
 	{
 		return $this->parameters->get('secretKey');
 	}
-
 }

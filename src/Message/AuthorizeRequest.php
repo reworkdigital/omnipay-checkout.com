@@ -1,22 +1,20 @@
 <?php
 
-
 namespace Omnipay\CheckoutCom\Message;
 
-
+use Omnipay\CheckoutCom\Exceptions\InvalidAmountException;
 use Omnipay\Common\Http\Client;
 use Omnipay\Common\Message\MessageInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 
-class AuthorizeRequest implements MessageInterface
+class AuthorizeRequest extends AbstractRequest implements MessageInterface
 {
 	private $client;
 	private $request;
 	private $response;
 	private $requestParams;
-	private $headers;
-	private $parameters;
+	protected $parameters;
 
 
 	public function __construct(Client $client, Request $request)
@@ -29,6 +27,10 @@ class AuthorizeRequest implements MessageInterface
 
 	public function initialize($parameters = [])
 	{
+		if($parameters['amount'] <= 0 ){
+			throw new InvalidAmountException('Amount should be more than 0');
+		}
+
 		$params = [
 			'source' => [
 				'type' => 'token',
@@ -49,7 +51,6 @@ class AuthorizeRequest implements MessageInterface
 		$this->requestParams->add($params);
 
 		return $this;
-
 	}
 
 	public function getData()
@@ -59,7 +60,7 @@ class AuthorizeRequest implements MessageInterface
 
 	public function send()
 	{
-		$response = json_decode($this->client->request('POST', 'https://api.sandbox.checkout.com/payments', [
+		$response = json_decode($this->client->request('POST', $this->getUrl('payments'), [
 			'Authorization' => $this->parameters->get('secretKey'),
 			'Content-Type' => 'application/json'
 		], json_encode($this->requestParams->all()))->getBody()->getContents(), 1);

@@ -10,10 +10,11 @@ use Omnipay\Common\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 
-class CompletePurchaseRequest implements RequestInterface
+class CompletePurchaseRequest extends AbstractRequest implements RequestInterface
 {
 
 	private $response;
+	protected $parameters;
 
 	public function __construct(Client $client, Request $request)
 	{
@@ -47,7 +48,7 @@ class CompletePurchaseRequest implements RequestInterface
 
 	public function send()
 	{
-		$response = json_decode($this->client->request('GET', 'https://api.sandbox.checkout.com/payments/' . $this->requestParams->get('id'), [
+		$response = json_decode($this->client->request('GET', $this->getUrl('payments/'.  $this->requestParams->get('id')), [
 			'Authorization' => $this->parameters->get('secretKey'),
 			'Content-Type' => 'application/json'
 		])->getBody()->getContents(), 1);

@@ -3,7 +3,8 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Omnipay\\CheckoutCom\\" : "src/"
+            "Omnipay\\CheckoutCom\\" : "src/",
+            "Omnipay\\CheckoutCom\\Tests\\" : "tests/"
         }
     },
     "authors": [
@@ -15,5 +16,8 @@
     "require": {
         "league/omnipay": "^3"
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "require-dev": {
+        "phpunit/phpunit": "^8.3"
+    }
 }

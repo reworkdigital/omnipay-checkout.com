@@ -7,14 +7,13 @@ use Omnipay\Common\Message\RequestInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 
-class CaptureRequest implements RequestInterface
+class CaptureRequest extends AbstractRequest implements RequestInterface
 {
 
 	private $client;
 	private $request;
 	private $response;
-	private $url = 'https://api.sandbox.checkout.com/payments/%s/captures';
-	private $parameters;
+	protected $parameters;
 	private $requestParams;
 
 	public function __construct(Client $client, Request $request)
@@ -34,9 +33,9 @@ class CaptureRequest implements RequestInterface
 	{
 		$this->parameters->set('secretKey', $parameters['secretKey']);
 		$this->requestParams->add([
-			'amount' => $parameters['amount']
+			'amount' => $parameters['amount'],
+			'id' => $parameters['id']
 		]);
-		$this->url = sprintf($this->url, $parameters['id']);
 
 		return $this;
 	}
@@ -54,7 +53,7 @@ class CaptureRequest implements RequestInterface
 	public function send()
 	{
 		$response = $this->client
-			->request('POST', $this->url, [
+			->request('POST', $this->getUrl(sprintf('/payments/%s/captures', $this->requestParams->get('id'))), [
 				'Authorization' => $this->parameters->get('secretKey'),
 				'Content-Type' => 'application/json'
 			], json_encode([
