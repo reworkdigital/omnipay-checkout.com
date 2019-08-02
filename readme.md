@@ -1,4 +1,4 @@
-# Omnipay: PayPal
+# Omnipay: Checkout.com
 
 **Checkout.com driver for the Omnipay PHP payment processing library**
 
