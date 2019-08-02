@@ -58,17 +58,17 @@ class AuthorizeRequestTest extends TestCase
 	public function getTestData()
 	{
 		return [
-			[[
+			[[//3ds disabled
 				'url' => 'https://api.sandbox.checkout.com/payments',
 				'paymentOptions' => $this->getPaymentOptions(),
 				'params' => $params = $this->getRequestParams()
 			]],
-			[[
+			[[//3ds enabled
 				'url' => 'https://api.sandbox.checkout.com/payments',
 				'paymentOptions' => $this->getPaymentOptions(true),
 				'params' => $params = $this->getRequestParams(true)
 			]],
-			[[
+			[[//live mode
 				'url' => 'https://api.checkout.com/payments',
 				'paymentOptions' => $this->getPaymentOptions(true, false),
 				'params' => $params = $this->getRequestParams(true)
