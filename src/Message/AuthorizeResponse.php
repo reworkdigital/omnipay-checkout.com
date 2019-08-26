@@ -43,12 +43,40 @@ class AuthorizeResponse implements ResponseInterface
 
 	public function getMessage()
 	{
-		return $this->getData()["response_summary"];
+		$message = '';
+		if (isset($this->getData()["response_summary"])) {
+			return $this->getData()["response_summary"];
+		}
+
+		if(!$this->isSuccessful()){
+			if( isset($this->getData()['actions'])) {
+				$actions = $this->getData()['actions'];
+				if(isset($actions[0]['response_summary'])){
+					$message = $actions[0]['response_summary'];
+				}
+			}
+		}
+
+		return $message;
 	}
 
 	public function getCode()
 	{
-		return $this->getData()["auth_code"];
+		if( $this->isSuccessful()) {
+			return $this->getData()["auth_code"];
+		}
+
+		if(!$this->isSuccessful()){
+			if( isset($this->getData()['actions'])) {
+				$actions = $this->getData()['actions'];
+				if(isset($actions[0]['response_code'])){
+					return $actions[0]['response_code'];
+				}
+			}
+		}
+
+
+
 	}
 
 	public function getTransactionReference()

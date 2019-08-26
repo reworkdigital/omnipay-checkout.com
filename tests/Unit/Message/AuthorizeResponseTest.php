@@ -32,10 +32,19 @@ class AuthorizeResponseTest extends TestCase
 		$this->assertTrue($authorizeResponse->isRedirect());
 		$this->assertSame('pay_6ljybxgl3asedi3qaurjrfms3i', $authorizeResponse->getTransactionReference());
 		$this->assertSame('https://sandbox.checkout.com/api2/v2/3ds/acs/sid_ufbbwfo55y2evjpyu7wqpqtbfm', $authorizeResponse->getRedirectUrl());
-
 	}
 
+	public function testUnSuccessfulResponseIsCorrectlyParsed()
+	{
+		$data = include __DIR__ . '/../../Unit/Mocks/unsuccessful_response.php';
 
+		$request = $this->createMock(AuthorizeRequest::class);
+		$authorizeResponse = new AuthorizeResponse($request, $data);
 
-
+		$this->assertFalse($authorizeResponse->isSuccessful());
+		$this->assertFalse($authorizeResponse->isRedirect());
+		$this->assertSame('pay_dgoraqrws6jurl5ghlwi7wa7mi', $authorizeResponse->getTransactionReference());
+		$this->assertSame('Bad Track Data', $authorizeResponse->getMessage());
+		$this->assertSame('20087', $authorizeResponse->getCode());
+	}
 }
