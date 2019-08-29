@@ -13,6 +13,7 @@ class CompletePurchaseResponse implements ResponseInterface
 	private $request;
 	private $data;
 	private $parameters;
+	protected $response;
 
 	public function __construct(CompletePurchaseRequest $request, array $data)
 	{
@@ -44,12 +45,37 @@ class CompletePurchaseResponse implements ResponseInterface
 
 	public function getMessage()
 	{
-		return $this->isSuccessful() ? 'Success' : 'Error';
+		$message = '';
+		if (isset($this->getData()["response_summary"])) {
+			return $this->getData()["response_summary"];
+		}
+
+		if(!$this->isSuccessful()){
+			if( isset($this->getData()['actions'])) {
+				$actions = $this->getData()['actions'];
+				if(isset($actions[0]['response_summary'])){
+					$message = $actions[0]['response_summary'];
+				}
+			}
+		}
+
+		return $message;
 	}
 
 	public function getCode()
 	{
-		// TODO: Implement getCode() method.
+		if( $this->isSuccessful()) {
+			return $this->getData()["auth_code"];
+		}
+
+		if(!$this->isSuccessful()){
+			if( isset($this->getData()['actions'])) {
+				$actions = $this->getData()['actions'];
+				if(isset($actions[0]['response_code'])){
+					return $actions[0]['response_code'];
+				}
+			}
+		}
 	}
 
 	public function getTransactionReference()
@@ -61,6 +87,4 @@ class CompletePurchaseResponse implements ResponseInterface
 	{
 		return $this->response->all();
 	}
-
-
 }
