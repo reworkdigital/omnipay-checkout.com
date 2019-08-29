@@ -27,7 +27,7 @@ class AuthorizeRequest extends AbstractRequest implements MessageInterface
 
 	public function initialize($parameters = [])
 	{
-		if($parameters['amount'] <= 0 ){
+		if ($parameters['amount'] <= 0) {
 			throw new InvalidAmountException('Amount should be more than 0');
 		}
 
@@ -43,7 +43,11 @@ class AuthorizeRequest extends AbstractRequest implements MessageInterface
 			'description' => $parameters['description']
 		];
 
-		if(isset($parameters["3ds"]) && $parameters["3ds"]){
+		if (isset($parameters['reference'])) {
+			$params['reference'] = $parameters['reference'];
+		}
+
+		if (isset($parameters["3ds"]) && $parameters["3ds"]) {
 			$params["3ds"] = ["enabled" => true];
 		}
 
