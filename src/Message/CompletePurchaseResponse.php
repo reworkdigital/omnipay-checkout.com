@@ -65,7 +65,7 @@ class CompletePurchaseResponse implements ResponseInterface
 	public function getCode()
 	{
 		if( $this->isSuccessful()) {
-			return $this->getData()["auth_code"];
+			return $this->getData()["auth_code"] ?? null;
 		}
 
 		if(!$this->isSuccessful()){
