@@ -87,4 +87,9 @@ class CompletePurchaseResponse implements ResponseInterface
 	{
 		return $this->response->all();
 	}
+
+	public function getStatus()
+	{
+		return !empty($this->getData()['status']) ? $this->getData()['status']: null;
+	}
 }

@@ -74,9 +74,6 @@ class AuthorizeResponse implements ResponseInterface
 				}
 			}
 		}
-
-
-
 	}
 
 	public function getTransactionReference()
@@ -87,5 +84,10 @@ class AuthorizeResponse implements ResponseInterface
 	public function getRedirectUrl()
 	{
 		return isset($this->getData()["_links"]["redirect"]) ? $this->getData()["_links"]["redirect"]["href"] : null;
+	}
+
+	public function getStatus()
+	{
+		return !empty($this->getData()['status']) ? $this->getData()['status']: null;
 	}
 }
