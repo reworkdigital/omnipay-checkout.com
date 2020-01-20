@@ -27,20 +27,30 @@ class AuthorizeRequest extends AbstractRequest implements MessageInterface
 
 	public function initialize($parameters = [])
 	{
-		if ($parameters['amount'] <= 0) {
-			throw new InvalidAmountException('Amount should be more than 0');
+		$source = [];
+
+		if (isset($parameters['card_id'])) {
+			$source = [
+				'type' => 'id',
+				'id' => $parameters['card_id']
+			];
+		} else if (isset($parameters['token'])) {
+			$source = [
+				'type' => 'token',
+				'token' => $parameters['token'],
+			];
+		} else {
+			throw new NoPaymentSourceProvidedException('No payment source provided');
 		}
 
 		$params = [
-			'source' => [
-				'type' => 'token',
-				'token' => $parameters['token'],
-			],
-			'amount' => $parameters['amount'] * 100,
+			'source' => $source,
+			'amount' => (int)$parameters['amount'] * 100,
 			'currency' => $parameters['currency'],
-			'success_url' => $parameters['returnUrl'],
-			'failure_url' => $parameters['cancelUrl'],
-			'description' => $parameters['description']
+			'success_url' => $parameters['returnUrl'] ?? null,
+			'failure_url' => $parameters['cancelUrl'] ?? null,
+			'description' => $parameters['description'] ?? '',
+			'payment_type' => $parameters['payment_type'] ?? 'Regular',
 		];
 
 		if (isset($parameters['reference'])) {
@@ -49,6 +59,18 @@ class AuthorizeRequest extends AbstractRequest implements MessageInterface
 
 		if (isset($parameters["3ds"]) && $parameters["3ds"]) {
 			$params["3ds"] = ["enabled" => true];
+		}
+
+		if (isset($parameters["customer"]) && $parameters["customer"]) {
+			$params["customer"] = $parameters["customer"];
+		}
+
+		if (isset($parameters["meta"]) && $parameters["meta"]) {
+			$params["metadata"] = $parameters["meta"];
+		}
+
+		if (isset($parameters["previous_payment_id"]) && $parameters["previous_payment_id"]) {
+			$params["previous_payment_id"] = $parameters["previous_payment_id"];
 		}
 
 		$this->parameters->add($parameters);
@@ -64,10 +86,21 @@ class AuthorizeRequest extends AbstractRequest implements MessageInterface
 
 	public function send()
 	{
-		$response = json_decode($this->client->request('POST', $this->getUrl('payments'), [
+		$headers = [
 			'Authorization' => $this->parameters->get('secretKey'),
 			'Content-Type' => 'application/json'
-		], json_encode($this->requestParams->all()))->getBody()->getContents(), 1);
+		];
+
+		if ($this->parameters->has('idempotency-key')) {
+			$headers['Cko-Idempotency-Key'] = $this->parameters->get('idempotency-Key');
+		}
+
+		$response = json_decode($this->client->request(
+			'POST',
+			$this->getUrl('payments'),
+			$headers,
+			json_encode($this->requestParams->all())
+		)->getBody()->getContents(), 1);
 
 		return $this->response = new AuthorizeResponse($this, $response);
 	}

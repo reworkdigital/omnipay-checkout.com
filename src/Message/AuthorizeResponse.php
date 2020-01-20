@@ -28,6 +28,10 @@ class AuthorizeResponse implements ResponseInterface
 
 	public function isSuccessful()
 	{
+		if (!isset($this->getData()["approved"])) {
+			return false;
+		}
+
 		return !$this->isRedirect() && $this->getData()["approved"] && $this->getData()["status"] === "Authorized";
 	}
 
@@ -89,5 +93,10 @@ class AuthorizeResponse implements ResponseInterface
 	public function getStatus()
 	{
 		return !empty($this->getData()['status']) ? $this->getData()['status']: null;
+	}
+
+	public function getResponseCode()
+	{
+		return $this->getData()["response_code"] ?? null;
 	}
 }
