@@ -28,33 +28,14 @@ class CaptureResponse implements ResponseInterface
 
 	public function isSuccessful()
 	{
-//		return
-	}
-
-	public function isRedirect()
-	{
-		// TODO: Implement isRedirect() method.
+		if (!isset($this->getData()["action_id"])) {
+			return false;
+		}
 	}
 
 	public function isCancelled()
 	{
-		// TODO: Implement isCancelled() method.
+		return !$this->isSuccessful();
 	}
-
-	public function getMessage()
-	{
-		// TODO: Implement getMessage() method.
-	}
-
-	public function getCode()
-	{
-		// TODO: Implement getCode() method.
-	}
-
-	public function getTransactionReference()
-	{
-		// TODO: Implement getTransactionReference() method.
-	}
-
 
 }
