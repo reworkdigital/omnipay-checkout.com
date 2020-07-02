@@ -28,9 +28,7 @@ class CaptureResponse implements ResponseInterface
 
 	public function isSuccessful()
 	{
-		if (!isset($this->getData()["action_id"])) {
-			return false;
-		}
+		return isset($this->getData()["action_id"]));
 	}
 
 	public function isCancelled()
