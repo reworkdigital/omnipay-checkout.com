@@ -4,6 +4,7 @@ namespace Omnipay\CheckoutCom;
 
 use Omnipay\CheckoutCom\Message\AuthorizeRequest;
 use Omnipay\CheckoutCom\Message\CaptureRequest;
+use Omnipay\CheckoutCom\Message\RefundRequest;
 use Omnipay\CheckoutCom\Message\CompletePurchaseRequest;
 use Omnipay\Common\AbstractGateway;
 use Omnipay\Common\GatewayInterface;
@@ -46,6 +47,12 @@ class Gateway extends AbstractGateway implements GatewayInterface
 	{
 		$options = array_merge($this->getParameters(), $options);
 		return $this->createRequest(CaptureRequest::class, $options);
+	}
+
+	public function refund(array $options = array())
+	{
+		$options = array_merge($this->getParameters(), $options);
+		return $this->createRequest(RefundRequest::class, $options);
 	}
 
 	public function completePurchase(array $options = array())
