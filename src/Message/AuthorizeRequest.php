@@ -92,7 +92,7 @@ class AuthorizeRequest extends AbstractRequest implements MessageInterface
 		];
 
 		if ($this->parameters->has('idempotency-key')) {
-			$headers['Cko-Idempotency-Key'] = $this->parameters->get('idempotency-Key');
+			$headers['Cko-Idempotency-Key'] = $this->parameters->get('idempotency-key');
 		}
 
 		$response = json_decode($this->client->request(
