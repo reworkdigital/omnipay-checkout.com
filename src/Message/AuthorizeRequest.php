@@ -45,8 +45,9 @@ class AuthorizeRequest extends AbstractRequest implements MessageInterface
 
 		$params = [
 			'source' => $source,
-			'amount' => (int)$parameters['amount'] * 100,
+			'amount' => (int)($parameters['amount'] * 100),
 			'currency' => strtoupper($parameters['currency']),
+			'processing_channel_id' => $parameters['processing_channel_id'],
 			'success_url' => $parameters['returnUrl'] ?? null,
 			'failure_url' => $parameters['cancelUrl'] ?? null,
 			'description' => $parameters['description'] ?? '',
@@ -87,7 +88,7 @@ class AuthorizeRequest extends AbstractRequest implements MessageInterface
 	public function send()
 	{
 		$headers = [
-			'Authorization' => $this->parameters->get('secretKey'),
+			'Authorization' => 'Bearer ' . $this->parameters->get('secretKey'),
 			'Content-Type' => 'application/json'
 		];
 
@@ -95,12 +96,14 @@ class AuthorizeRequest extends AbstractRequest implements MessageInterface
 			$headers['Cko-Idempotency-Key'] = $this->parameters->get('idempotency-key');
 		}
 
-		$response = json_decode($this->client->request(
-			'POST',
-			$this->getUrl('payments'),
-			$headers,
-			json_encode($this->requestParams->all())
-		)->getBody()->getContents(), 1);
+        $request = $this->client->request(
+            'POST',
+            $this->getUrl('payments'),
+            $headers,
+            json_encode($this->requestParams->all())
+        );
+
+		$response = json_decode($request->getBody()->getContents(), 1);
 
 		return $this->response = new AuthorizeResponse($this, $response);
 	}
