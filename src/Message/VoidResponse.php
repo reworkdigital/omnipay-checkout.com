@@ -4,13 +4,13 @@ namespace Omnipay\CheckoutCom\Message;
 
 use Omnipay\Common\Message\ResponseInterface;
 
-class RefundResponse implements ResponseInterface
+class VoidResponse implements ResponseInterface
 {
 
 	private $data;
 	private $request;
 
-	public function __construct(RefundRequest $request, array $data)
+	public function __construct(VoidRequest $request, array $data)
 	{
 		$this->data = $data;
 		$this->request = $request;
