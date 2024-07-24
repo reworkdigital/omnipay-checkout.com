@@ -33,7 +33,6 @@ class VoidRequest extends AbstractRequest implements RequestInterface
 	{
 		$this->parameters->set('secretKey', $parameters['secretKey']);
 		$this->requestParams->add([
-			'amount' => $parameters['amount'],
 			'id' => $parameters['id']
 		]);
 
