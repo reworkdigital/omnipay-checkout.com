@@ -10,7 +10,7 @@ class RefundResponse implements ResponseInterface
 	private $data;
 	private $request;
 
-	public function __construct(RefundRequest $request, array $data)
+	public function __construct(RefundRequest $request, ?array $data = [])
 	{
 		$this->data = $data;
 		$this->request = $request;
@@ -35,5 +35,38 @@ class RefundResponse implements ResponseInterface
 	{
 		return !$this->isSuccessful();
 	}
+
+    public function isRedirect()
+    {
+        return !empty($this->getData()["_links"]["redirect"]);
+    }
+
+    public function getMessage()
+    {
+        return '';
+    }
+
+    public function getCode()
+    {
+        if( $this->isSuccessful()) {
+            return $this->getData()["action_id"];
+        }
+
+        if(!$this->isSuccessful()){
+            if( isset($this->getData()['request_id'])) {
+                return $this->getData()['request_id'];
+            }
+        }
+    }
+
+    public function getTransactionReference()
+    {
+        return null;
+    }
+
+    public function getStatus()
+    {
+        return $this->isSuccessful() ? 'Refunded' : 'Refund Error';
+    }
 
 }

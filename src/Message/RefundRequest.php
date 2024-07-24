@@ -54,7 +54,7 @@ class RefundRequest extends AbstractRequest implements RequestInterface
 	{
 		$response = $this->client
 			->request('POST', $this->getUrl(sprintf('/payments/%s/refunds', $this->requestParams->get('id'))), [
-				'Authorization' => $this->parameters->get('secretKey'),
+				'Authorization' => 'Bearer ' . $this->parameters->get('secretKey'),
 				'Content-Type' => 'application/json'
 			], json_encode([
 				'amount' => $this->requestParams->get('amount') * 100
