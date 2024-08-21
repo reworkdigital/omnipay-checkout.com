@@ -82,7 +82,7 @@ class AuthorizeResponse implements ResponseInterface
 
 	public function getTransactionReference()
 	{
-		return $this->getData()["id"];
+        return $this->getData()["id"] ?? null;
 	}
 
 	public function getRedirectUrl()
