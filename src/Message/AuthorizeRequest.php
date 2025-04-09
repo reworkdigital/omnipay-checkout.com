@@ -62,6 +62,10 @@ class AuthorizeRequest extends AbstractRequest implements MessageInterface
 			$params["3ds"] = ["enabled" => true];
 		}
 
+		if (isset($parameters["capture"])) {
+			$params["capture"] = $parameters["capture"];
+		}
+
 		if (isset($parameters["customer"]) && $parameters["customer"]) {
 			$params["customer"] = $parameters["customer"];
 		}
