@@ -3,72 +3,60 @@
 namespace Omnipay\CheckoutCom\Message;
 
 use Omnipay\Common\Http\Client;
+use Omnipay\Common\Message\MessageInterface;
 use Omnipay\Common\Message\RequestInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 
-class CaptureRequest extends AbstractRequest implements RequestInterface
+class CaptureRequest extends AbstractRequest implements MessageInterface
 {
 
-	private $client;
-	private $request;
-	private $response;
-	protected $parameters;
-	private $requestParams;
+    private $client;
+    private $request;
+    private $response;
+    private $requestParams;
+    protected $parameters;
 
-	public function __construct(Client $client, Request $request)
-	{
-		$this->client = $client;
-		$this->request = $request;
-		$this->parameters = new ParameterBag();
-		$this->requestParams = new ParameterBag();
-	}
 
-	public function getData()
-	{
-		return $this->response;
-	}
+    public function __construct(Client $client, Request $request)
+    {
+        $this->client = $client;
+        $this->request = $request;
+        $this->parameters = new ParameterBag();
+        $this->requestParams = new ParameterBag();
+    }
 
-	public function initialize(array $parameters = array())
-	{
-		$this->parameters->set('secretKey', $parameters['secretKey']);
-		$this->requestParams->add([
-			'amount' => $parameters['amount'],
-			'id' => $parameters['id']
-		]);
+    public function getData()
+    {
+        return $this->response;
+    }
 
-		return $this;
-	}
+    public function initialize($parameters = [])
+    {
+        $this->requestParams->add([
+            'id' => $parameters['id']
+        ]);
 
-	public function getParameters()
-	{
-		// TODO: Implement getParameters() method.
-	}
+        $this->parameters->add($parameters);
 
-	public function getResponse()
-	{
-		return $this->response;
-	}
+        return $this;
+    }
 
-	public function send()
-	{
-		$response = $this->client
-			->request('POST', $this->getUrl(sprintf('/payments/%s/captures', $this->requestParams->get('id'))), [
-				'Authorization' => $this->parameters->get('secretKey'),
-				'Content-Type' => 'application/json'
-			], json_encode([
-				'amount' => $this->requestParams->get('amount') * 100
-			]))
-			->getBody()
-			->getContents();
+    public function send()
+    {
+        $headers = [
+            'Authorization' => 'Bearer ' . $this->parameters->get('secretKey'),
+            'Content-Type' => 'application/json'
+        ];
 
-		return $this->response = new CaptureResponse($this, json_decode($response, 1));
-	}
+        $request = $this->client->request(
+            'POST',
+            $this->getUrl(sprintf('payments/%s/captures', $this->requestParams->get('id'))),
+            $headers
+        );
 
-	public function sendData($data)
-	{
-		// TODO: Implement sendData() method.
-	}
+        return $this->response = new CaptureResponse($this, json_decode($request->getBody()->getContents(), 1));
+    }
 
 
 }
